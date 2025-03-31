@@ -1,1 +1,1 @@
-DB_PATH = 'db/Список покупок'
+DB_PATH = 'db/products.db'

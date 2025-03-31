@@ -1,26 +1,17 @@
-CREATE_TABLE_TASKS = """
-CREATE TABLE IF NOT EXISTS tasks (
+CREATE_TABLE_PRODUCTS = """
+CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    task_text TEXT NOT NULL,  -- здесь task_text вместо task
-    completed INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    in_progress INTEGER NOT NULL DEFAULT 0
+    product TEXT NOT NULL,
+    is_checked INTEGER DEFAULT 0
 );
 """
 
-SELECT_TASKS = "SELECT id, task_text, completed, created_at, in_progress FROM tasks"
+ADD_PRODUCT = "INSERT INTO products (product) VALUES (?);"
 
-INSERT_TASK = "INSERT INTO tasks (task) VALUES (?)"
+GET_PRODUCTS = "SELECT id, product, is_checked FROM products;"
 
-UPDATE_TASK = "UPDATE tasks SET task = ? WHERE id = ?"
+UPDATE_PRODUCT = "UPDATE products SET product = ? WHERE id = ?;"
 
-UPDATE_TASK_DONE = "UPDATE tasks SET completed = 1 WHERE id = ?"
+TOGGLE_PRODUCT_STATUS = "UPDATE products SET is_checked = ? WHERE id = ?;"
 
-DELETE_TASK = "DELETE FROM tasks WHERE id = ?"
-
-DELETE_TASK_DONE = "DELETE FROM tasks WHERE completed = 1"
-
-
-SELECT_completed = 'SELECT id, task, completed FROM tasks WHERE completed = 1'
-
-SELECT_incomplete = 'SELECT id, task, completed FROM tasks WHERE completed = 0'
+DELETE_PRODUCT = "DELETE FROM products WHERE id = ?;"

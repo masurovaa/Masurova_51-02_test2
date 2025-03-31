@@ -1,55 +1,48 @@
 import sqlite3
+from db.queries import *
 from config import DB_PATH
-from db import queries
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute(queries.CREATE_TABLE_TASKS)
+    cursor.execute(CREATE_TABLE_PRODUCTS)
     conn.commit()
     conn.close()
 
-def get_tasks(filter_type="all"):
+def add_products_db(product_name):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    
-    if filter_type == 'completed':
-        cursor.execute(queries.SELECT_COMPLETED)
-    elif filter_type == "incomplete":
-        cursor.execute(queries.SELECT_INCOMPLETE)
-    else:
-        cursor.execute(queries.SELECT_TASKS)
-    
-    tasks = cursor.fetchall()
-    conn.close()
-    return tasks
-
-def add_task_db(task, quantity=1):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute(queries.INSERT_TASK, (task, quantity, 0))
+    cursor.execute(ADD_PRODUCT, (product_name,))
     conn.commit()
-    task_id = cursor.lastrowid
+    last_row_id = cursor.lastrowid
     conn.close()
-    return task_id
+    return last_row_id
 
-def update_task_db(task_id, new_task=None, quantity=None, completed=None):
+def get_product():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    
-    if new_task is not None:
-        cursor.execute("UPDATE tasks SET text = ? WHERE id = ?", (new_task, task_id))
-    if quantity is not None:
-        cursor.execute("UPDATE tasks SET quantity = ? WHERE id = ?", (quantity, task_id))
-    if completed is not None:
-        cursor.execute("UPDATE tasks SET completed = ? WHERE id = ?", (completed, task_id))
-    
+    cursor.execute(GET_PRODUCTS)
+    products = cursor.fetchall()  
+    conn.close()
+    return products
+
+def update_product_db(product_id, new_name):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute(UPDATE_PRODUCT, (new_name, product_id))
     conn.commit()
     conn.close()
 
-def delete_task_db(task_id):
+def toggle_product_status(product_id, is_checked):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute(queries.DELETE_TASK, (task_id,))
+    cursor.execute(TOGGLE_PRODUCT_STATUS, (int(is_checked), product_id))
+    conn.commit()
+    conn.close()
+
+def delete_product_db(product_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute(DELETE_PRODUCT, (product_id,))
     conn.commit()
     conn.close()
